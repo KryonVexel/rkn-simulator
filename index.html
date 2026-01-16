@@ -646,6 +646,165 @@
             z-index: 200;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+        /* === МОБИЛЬНАЯ АДАПТАЦИЯ === */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+
+    header {
+        padding: 15px;
+    }
+    h1.main-title {
+        font-size: 1.6rem;
+    }
+    .subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .casino-block {
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .status-label {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    /* Вертикальная рулетка на мобильных */
+    .roulette-viewport {
+        height: 120px;
+        border-width: 6px;
+        margin-bottom: 20px;
+    }
+
+    #tape {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+    }
+    .item-card {
+        min-width: 100%;
+        height: 80px;
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 0 15px;
+    }
+    .item-card i,
+    .sigma-icon {
+        font-size: 1.8rem !important;
+        margin: 0 10px 0 0 !important;
+        height: auto !important;
+    }
+    .item-card span {
+        font-size: 0.95rem;
+    }
+
+    .btn-container {
+        gap: 15px;
+    }
+    .btn {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        gap: 8px;
+    }
+    .btn-main {
+        font-size: 1.1rem;
+        padding: 14px 25px;
+    }
+
+    .news-section, .agenda-section {
+        padding: 15px;
+        margin-top: 20px;
+    }
+    .news-title, .agenda-title {
+        font-size: 1.1rem;
+    }
+    .news-entry {
+        font-size: 0.85rem;
+        padding: 8px;
+    }
+
+    .agenda-buttons {
+        gap: 8px;
+    }
+    .agenda-buttons .btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+
+    .music-toggle {
+        width: 50px;
+        height: 50px;
+        bottom: 15px;
+        right: 15px;
+    }
+    .music-toggle i {
+        font-size: 1.2rem;
+    }
+
+    .btn-escape {
+        bottom: 80px;
+        right: 15px;
+        padding: 8px 15px;
+        font-size: 0.8rem;
+    }
+
+    /* Попапы */
+    #citizen-popup {
+        bottom: 150px;
+        padding: 15px;
+        max-width: 90%;
+    }
+    #citizen-popup button {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
+
+    /* BSOD и победа */
+    #bsod, #victory-screen, #escape-screen {
+        padding: 20px;
+    }
+    #bsod h2, #victory-screen h2, #escape-screen h2 {
+        font-size: 2rem;
+    }
+    #bsod p, #victory-screen p, #escape-screen p {
+        font-size: 1.1rem;
+    }
+    #restart-btn, #reboot-btn, #award-btn {
+        padding: 12px 30px;
+        font-size: 1.1rem;
+    }
+}
+
+/* === Очень маленькие экраны (iPhone SE) === */
+@media (max-width: 480px) {
+    .item-card {
+        height: 70px;
+    }
+    .item-card i,
+    .sigma-icon {
+        font-size: 1.6rem !important;
+    }
+    .stat-value {
+        font-size: 1.3rem;
+    }
+    .btn {
+        padding: 10px 15px;
+        font-size: 0.85rem;
+    }
+}
     </style>
 </head>
 <body>
@@ -875,7 +1034,8 @@
         { name: "Википедия", icon: "fa-solid fa-book-atlas", type: "std", patriotName: "Правдапедия", blocked: false, isCloned: false },
         { name: "Облако Майл", icon: "fa-solid fa-cloud", type: "std", patriotName: "Облако-Русь", blocked: false, isCloned: false },
         { name: "Погода Mail.ru", icon: "fa-solid fa-sun", type: "std", patriotName: "Погода-Матушка", blocked: false, isCloned: false },
-        { name: "Госуслуги", icon: "fa-solid fa-landmark", type: "spec", patriotName: "ГосСлужба", blocked: false, isCloned: false }
+        { name: "Госуслуги", icon: "fa-solid fa-landmark", type: "spec", patriotName: "ГосСлужба", blocked: false, isCloned: false },
+        { name: "SigmaAi", icon: "Σ", type: "std", patriotName: "КрутойИИ", blocked: false, isCloned: false } // ← SigmaCode → SigmaAi
     ];
 
     const newsVault = [
@@ -1626,6 +1786,16 @@ function checkVictory() {
 
     // === ЗАПУСК ===
     window.onload = () => {
+        // Улучшаем тач-эффекты
+document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('touchstart', () => btn.classList.add('active'));
+    btn.addEventListener('touchend', () => btn.classList.remove('active'));
+});
+
+// Предотвращаем масштабирование при двойном клике
+document.addEventListener('dblclick', (e) => {
+    if (e.target.closest('.btn')) e.preventDefault();
+}, { passive: false });
         initSnow();
         drawSnow();
         generateTape();
@@ -1676,5 +1846,4 @@ function checkVictory() {
 
 </body>
 </html>
-
 
