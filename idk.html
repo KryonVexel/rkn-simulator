@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>РКН СИМУЛЯТОР: ДЕПУТАТ 2026</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --rkn-blue: #003399;
+            --rkn-gold: #ccac41;
+            --danger: #d32f2f;
+            --success: #2e7d32;
+            --dark: #0f172a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--dark);
+            color: white;
+            overflow-x: hidden;
+            user-select: none;
+            line-height: 1.5;
+            transition: background-color 1.5s ease;
+        }
+
+        /* === ДИСКЛЕЙМЕР === */
+        #disclaimer {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+            text-align: center;
+        }
+        #disclaimer h2 {
+            color: var(--rkn-gold);
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+        #disclaimer p {
+            max-width: 700px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #cbd5e1;
+        }
+        #accept-btn {
+            padding: 12px 30px;
+            background: var(--rkn-gold);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        /* === ВСТУПИТЕЛЬНЫЙ ЭКРАН === */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease;
+        }
+
+        #intro-screen h1 {
+            font-size: 3rem;
+            margin-bottom: 40px;
+            color: var(--rkn-gold);
+            text-shadow: 0 0 15px rgba(204, 172, 65, 0.7);
+            letter-spacing: 3px;
+        }
+
+        #enter-btn {
+            padding: 18px 50px;
+            font-size: 1.4rem;
+            background: var(--rkn-gold);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 0 #9e8532;
+            transition: all 0.2s;
+        }
+
+        #enter-btn:hover {
+            background: #e3c152;
+        }
+
+        #enter-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #9e8532;
+        }
+
+        /* === ОСНОВНОЙ КОНТЕНТ === */
+        #main-content {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        #main-content.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* === ДИНАМИЧЕСКАЯ ВИБРАЦИЯ === */
+        .vibrate-0 { animation: vibrate 8s infinite ease-in-out; }
+        .vibrate-1 { animation: vibrate 6s infinite ease-in-out; }
+        .vibrate-2 { animation: vibrate 4s infinite ease-in-out; }
+        .vibrate-3 { animation: vibrate 2s infinite ease-in-out; }
+        .vibrate-4 { animation: vibrate 1s infinite ease-in-out; }
+        .vibrate-5 { animation: vibrate 0.5s infinite ease-in-out; }
+
+        @keyframes vibrate {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-2px, -2px); }
+            20% { transform: translate(2px, -2px); }
+            30% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, 2px); }
+            50% { transform: translate(-2px, 0); }
+            60% { transform: translate(2px, 0); }
+            70% { transform: translate(0, -2px); }
+            80% { transform: translate(0, 2px); }
+            90% { transform: translate(2px, -2px); }
+        }
+
+        /* === СНЕГ === */
+        #snow-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 10;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: var(--rkn-blue);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--rkn-gold);
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            animation: shine 4s infinite;
+        }
+
+        @keyframes shine {
+            to { left: 200%; }
+        }
+
+        h1.main-title {
+            margin: 0;
+            font-size: 2.2rem;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.07);
+            padding: 20px;
+            border-radius: 12px;
+            border-bottom: 4px solid var(--rkn-gold);
+            text-align: center;
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            opacity: 0.85;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--rkn-gold);
+            margin-top: 5px;
+            text-shadow: 0 0 8px rgba(204, 172, 65, 0.3);
+        }
+
+        .casino-block {
+            background: #1e293b;
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid #334155;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-label {
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--rkn-gold);
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            font-size: 1.2rem;
+            text-shadow: 0 0 6px rgba(204, 172, 65, 0.4);
+        }
+
+        .roulette-viewport {
+            width: 100%;
+            height: 180px;
+            background: #f8fafc;
+            border: 8px solid var(--rkn-gold);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .roulette-marker {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--danger);
+            z-index: 20;
+            transform: translateX(-50%);
+            box-shadow: 0 0 15px rgba(211, 47, 47, 0.7);
+        }
+
+        #tape {
+            display: flex;
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            will-change: transform;
+            transition: none;
+        }
+
+        .item-card {
+            min-width: 180px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #334155;
+            border-right: 1px solid #e2e8f0;
+            font-weight: bold;
+            font-size: 1rem;
+            background: white;
+            transition: background 0.2s;
+        }
+
+        .item-card:hover {
+            background: #f1f5f9;
+        }
+
+        /* === ИКОНКИ === */
+        .item-card i {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            color: var(--rkn-blue);
+        }
+
+        .sigma-icon {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--rkn-blue);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 50px;
+            font-family: 'Segoe UI', Georgia, serif;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 800;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 1px;
+            z-index: 20;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-main {
+            background: var(--rkn-gold);
+            color: #1e293b;
+            font-size: 1.3rem;
+            box-shadow: 0 6px 0 #9e8532;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        .btn-main:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #9e8532;
+        }
+
+        .btn-main:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: scale(0.98);
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 6px 0 #9e8532, 0 0 0 0 rgba(204, 172, 65, 0.4); }
+            50% { box-shadow: 0 6px 0 #9e8532, 0 0 0 12px rgba(204, 172, 65, 0); }
+        }
+
+        .btn-truth {
+            background: #3b82f6;
+            color: white;
+            width: 100%;
+            max-width: 450px;
+            justify-content: center;
+        }
+
+        .btn-truth:hover {
+            background: #2563eb;
+        }
+
+        .action-btns {
+            display: none;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-red { background: var(--danger); color: white; }
+        .btn-green { background: var(--success); color: white; }
+        .btn-yellow { background: #f59e0b; color: white; }
+        .btn-purple { background: #8b5cf6; color: white; }
+        .btn-escape { 
+            background: #64748b; 
+            color: white; 
+            position: fixed;
+            bottom: 120px;
+            right: 20px;
+            z-index: 99;
+            padding: 12px 20px;
+            font-size: 0.9rem;
+        }
+
+        .news-section, .agenda-section {
+            margin-top: 30px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid var(--rkn-blue);
+        }
+
+        .news-title, .agenda-title {
+            margin-top: 0;
+            color: var(--rkn-gold);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.2rem;
+        }
+
+        #news-feed {
+            list-style: none;
+            padding: 0;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .news-entry {
+            padding: 12px;
+            border-bottom: 1px solid #334155;
+            font-size: 0.95rem;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .stamp {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0) rotate(-15deg);
+            padding: 20px 50px;
+            border: 12px solid;
+            font-size: 4rem;
+            font-weight: 950;
+            background: white;
+            border-radius: 20px;
+            z-index: 100;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.5);
+            opacity: 0;
+            pointer-events: none;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .stamp.show {
+            transform: translate(-50%, -50%) scale(1) rotate(-15deg);
+            opacity: 1;
+        }
+
+        .music-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
+            background: var(--rkn-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid var(--rkn-gold);
+            z-index: 100;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .music-toggle i {
+            font-size: 1.5rem;
+            color: var(--rkn-gold);
+        }
+
+        .music-playing i {
+            animation: rotateMusic 2s linear infinite;
+        }
+
+        @keyframes rotateMusic {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        #news-feed::-webkit-scrollbar {
+            width: 8px;
+        }
+        #news-feed::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+        #news-feed::-webkit-scrollbar-thumb {
+            background: var(--rkn-gold);
+            border-radius: 4px;
+        }
+
+        .agenda-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .agenda-buttons .btn {
+            padding: 10px 15px;
+            font-size: 0.85rem;
+            width: auto;
+            max-width: none;
+        }
+
+        /* === BSOD === */
+        .bsod-shake {
+            animation: bsodShake 0.1s infinite;
+        }
+        @keyframes bsodShake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        /* === ESCAPE SCREEN === */
+        #escape-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #0c0c0c;
+            color: #ccac41;
+            font-family: 'Segoe UI', monospace;
+            z-index: 10000;
+            text-align: center;
+            padding: 50px;
+            box-sizing: border-box;
+        }
+        #escape-screen h2 {
+            font-size: 3rem;
+            margin: 40px 0;
+        }
+        #escape-screen p {
+            font-size: 1.4rem;
+            max-width: 800px;
+            margin: 0 auto 50px;
+            line-height: 1.6;
+        }
+        #restart-btn {
+            background: var(--rkn-gold);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* === СЛОМАННАЯ АППАРАТУРА === */
+        .broken-equipment {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 120px;
+            background: repeating-linear-gradient(
+                45deg,
+                #2d3748,
+                #2d3748 10px,
+                #4a5568 10px,
+                #4a5568 20px
+            );
+            display: none;
+            z-index: 50;
+            border-top: 3px solid #ef4444;
+        }
+        .broken-equipment::after {
+            content: "⚠️ СИСТЕМА НЕСТАБИЛЬНА ⚠️";
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ef4444;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-shadow: 0 0 5px black;
+        }
+
+        /* === ВЗРЫВ КНОПОК === */
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); box-shadow: 0 0 20px #ef4444; }
+            100% { transform: scale(0.8); opacity: 0.7; }
+        }
+        .exploding {
+            animation: explode 0.5s infinite alternate;
+        }
+
+        /* === СООБЩЕНИЯ ОТ ЖИТЕЛЕЙ === */
+        #citizen-popup {
+            display: none;
+            position: fixed;
+            bottom: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            border: 2px solid var(--rkn-gold);
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 600px;
+            z-index: 200;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ДИСКЛЕЙМЕР -->
+<div id="disclaimer">
+    <h2>ВНИМАНИЕ: САТИРИЧЕСКИЙ ПРОЕКТ</h2>
+    <p>
+        Данный симулятор создан исключительно в юмористических и сатирических целях.
+        Все события, персонажи и организации вымышлены или использованы в ироническом контексте.
+        Автор не призывает к каким-либо действиям и не несёт ответственности за интерпретацию.
+    </p>
+    <button id="accept-btn">Я ПОНИМАЮ, ЧТО ЭТО ШУТКА</button>
+</div>
+
+<!-- ВСТУПИТЕЛЬНЫЙ ЭКРАН -->
+<div id="intro-screen" style="display:none;">
+    <h1>РОСКОМНАДЗОР<br>ДЕПУТАТСКИЙ РЕЖИМ</h1>
+    <button id="enter-btn">ВОЙТИ В ГОСДУМУ</button>
+</div>
+
+<!-- ОСНОВНОЙ КОНТЕНТ -->
+<div id="main-content">
+    <canvas id="snow-layer"></canvas>
+
+    <header>
+        <div class="subtitle">ГОСУДАРСТВЕННАЯ ДУМА РФ</div>
+        <h1 class="main-title">РКН СИМУЛЯТОР: ДЕПУТАТ 2026</h1>
+    </header>
+
+    <div class="app-container" id="vibrating-area">
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-label">БЮДЖЕТ</div>
+                <div id="stat-money" class="stat-value">0 МЛН ₽</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">ОЧИСТКА СЕТИ</div>
+                <div id="stat-blocks" class="stat-value">0%</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">ДОВЕРИЕ ГРАЖДАН</div>
+                <div id="stat-trust" class="stat-value">100%</div>
+            </div>
+        </div>
+
+        <div class="casino-block">
+            <div class="status-label" id="status-label">ВЕРШИТЕ СУДЬБУ РУНЕТА</div>
+            
+            <div class="roulette-viewport">
+                <div class="roulette-marker"></div>
+                <div id="tape"></div>
+                <div id="stamp-ui" class="stamp">БАН</div>
+            </div>
+
+            <div class="btn-container">
+                <button id="spin-btn" class="btn btn-main" onclick="startSpin()">
+                    <i class="fa-solid fa-gavel"></i> ВЫБРАТЬ ОБЪЕКТ
+                </button>
+
+                <div id="group-standard" class="action-btns">
+                    <button class="btn btn-yellow" onclick="apply('slow')">ЗАМЕДЛИТЬ</button>
+                    <button class="btn btn-red" onclick="apply('ban')">ЗАБАНИТЬ</button>
+                    <button class="btn btn-green" onclick="apply('clone')">АНАЛОГ</button>
+                    <button class="btn btn-purple" onclick="apply('complain')">ПОЖАЛОВАТЬСЯ НА СМИ</button>
+                </div>
+
+                <div id="group-special" class="action-btns">
+                    <button class="btn btn-green" onclick="apply('tree')">УКРАСИТЬ ЕЛЬ</button>
+                    <button class="btn btn-red" onclick="apply('money')">ВЗЯТЬ ГРАНТ</button>
+                    <button class="btn btn-red" onclick="apply('weather')">ЗАБЛОКИРОВАТЬ ПОГОДУ</button>
+                    <button class="btn btn-green" onclick="apply('report')">ОТЧЕТ ОБ УСПЕХАХ</button>
+                    <button class="btn btn-yellow" onclick="apply('hide')">СКРЫТЬ СТАТИСТИКУ</button>
+                </div>
+
+                <!-- НОВЫЕ КНОПКИ ДЛЯ ПАТРИОТИЧЕСКИХ АНАЛОГОВ -->
+                <div id="group-patriot" class="action-btns">
+                    <button class="btn btn-yellow" onclick="patriotAction('ads')">НАПИХАТЬ РЕКЛАМЫ</button>
+                    <button class="btn btn-green" onclick="patriotAction('max')">ПРИВЯЗАТЬ МАКС</button>
+                    <button class="btn btn-purple" onclick="patriotAction('praise')">ВОСХВАЛЯТЬ В СМИ</button>
+                </div>
+
+                <button class="btn btn-truth" onclick="getTruthNews()">
+                    <i class="fa-solid fa-newspaper"></i> ОЗВУЧИТЬ ПОВЕСТКУ
+                </button>
+            </div>
+        </div>
+
+        <div class="news-section">
+            <h3 class="news-title"><i class="fa-solid fa-tower-broadcast"></i> СВОДКА СМИ:</h3>
+            <ul id="news-feed"></ul>
+        </div>
+
+        <!-- ПОВЕСТКА ДНЯ -->
+        <div class="agenda-section">
+            <h3 class="agenda-title"><i class="fa-solid fa-list-check"></i> ПОВЕСТКА ДНЯ</h3>
+            <div class="agenda-buttons">
+                <button class="btn btn-red" onclick="agendaAction('salary')">
+                    <i class="fa-solid fa-sack-dollar"></i> ЗАРПЛАТА ДЕПУТАТАМ
+                </button>
+                <button class="btn btn-green" onclick="agendaAction('thoughts')">
+                    <i class="fa-solid fa-brain"></i> ЗАПРЕТИТЬ МЫСЛИ
+                </button>
+                <button class="btn btn-yellow" onclick="agendaAction('poll')">
+                    <i class="fa-solid fa-chart-pie"></i> ОПРОС
+                </button>
+                <button class="btn btn-green" onclick="agendaAction('tree-gift')">
+                    <i class="fa-solid fa-gift"></i> ЕЛКА ШКОЛАМ
+                </button>
+                <button class="btn btn-red" onclick="agendaAction('cyber-war')">
+                    <i class="fa-solid fa-shield-halved"></i> КИБЕРЧС
+                </button>
+                <button class="btn btn-yellow" onclick="agendaAction('media-bribe')">
+                    <i class="fa-solid fa-newspaper"></i> ПОДКУПИТЬ СМИ
+                </button>
+                <button class="btn btn-green" onclick="agendaAction('patriot-law')">
+                    <i class="fa-solid fa-scale-balanced"></i> ЗАКОН О ПАТРИОТИЗМЕ
+                </button>
+                <button class="btn btn-red" onclick="agendaAction('crypto-ban')">
+                    <i class="fa-brands fa-bitcoin"></i> ЗАПРЕТИТЬ КРИПТУ
+                </button>
+                <button class="btn btn-purple" onclick="agendaAction('ai-control')">
+                    <i class="fa-solid fa-robot"></i> КОНТРОЛЬ ИИ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- СЛОМАННАЯ АППАРАТУРА -->
+    <div class="broken-equipment" id="broken-equipment"></div>
+
+    <!-- КНОПКА СБЕЖАТЬ -->
+    <button id="escape-btn" class="btn btn-escape" style="display:none;" onclick="escapeFromDuma()">
+        <i class="fa-solid fa-running"></i> СБЕЖАТЬ ИЗ ГОСДУМЫ
+    </button>
+
+    <div class="music-toggle" onclick="toggleAudio(event)">
+        <i id="music-icon" class="fa-solid fa-music"></i>
+    </div>
+</div>
+
+<!-- СООБЩЕНИЯ ОТ ЖИТЕЛЕЙ -->
+<div id="citizen-popup">
+    <div id="citizen-message"></div>
+    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+        <button class="btn btn-green" onclick="citizenChoice('good')" style="padding: 10px 20px; font-size: 0.95rem;">
+            <i class="fa-solid fa-hand-holding-heart"></i> ПОМОЧЬ
+        </button>
+        <button class="btn btn-red" onclick="citizenChoice('bad')" style="padding: 10px 20px; font-size: 0.95rem;">
+            <i class="fa-solid fa-sack-dollar"></i> ЗАБРАТЬ
+        </button>
+    </div>
+</div>
+
+<!-- ЭКРАН ПОБЕГА -->
+<div id="escape-screen">
+    <h2>ТИХИЙ УХОД</h2>
+    <p>Вы тайно покинули Госдуму в самый критический момент.<br>
+    Ваша отставка осталась незамеченной. Скрепы продолжают рушиться,<br>
+    но вы уже на берегу Черного моря, пьете чай и наблюдаете за закатом.<br>
+    <strong>Страна горит, но вы в безопасности.</strong></p>
+    <button id="restart-btn">НАЧАТЬ ЗАНОВО</button>
+</div>
+
+<!-- СИНИЙ ЭКРАН СМЕРТИ -->
+<div id="bsod" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #0078d7;
+    color: white;
+    font-family: 'Segoe UI', monospace;
+    z-index: 10000;
+    text-align: center;
+    padding: 50px;
+    box-sizing: border-box;
+">
+    <div style="font-size: 8rem; margin: 40px 0;">:(</div>
+    <div style="font-size: 2.5rem; margin-bottom: 30px;">Ваша политика привела к коллапсу.</div>
+    <div style="font-size: 1.8rem; margin-bottom: 50px; max-width: 800px; margin-left: auto; margin-right: auto;">
+        Вы развалили страну. Доверие граждан упало до нуля. Интернет лежит. Скрепы рассыпались.
+    </div>
+    <button id="reboot-btn" style="
+        background: #005a9e;
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.4rem;
+        border-radius: 8px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        box-shadow: 0 6px 0 #003f70;
+    ">ПЕРЕЗАГРУЗИТЬ ГОСДУМУ</button>
+</div>
+
+<script>
+    // === ДИСКЛЕЙМЕР ===
+    document.getElementById('accept-btn').addEventListener('click', () => {
+        document.getElementById('disclaimer').style.display = 'none';
+        document.getElementById('intro-screen').style.display = 'flex';
+    });
+
+    // === ВХОД В ГОСДУМУ ===
+    document.getElementById('enter-btn').addEventListener('click', () => {
+        document.getElementById('intro-screen').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('intro-screen').style.display = 'none';
+            document.getElementById('main-content').classList.add('active');
+            
+            if (audioBuffer) {
+                playMainAudio();
+                document.querySelector('.music-toggle').classList.add('music-playing');
+            }
+        }, 800);
+    });
+
+    // === ДАННЫЕ ===
+    const targets = [
+        { name: "YouTube", icon: "fa-brands fa-youtube", type: "std", patriotName: "ПатриотТуб", blocked: false, isCloned: false },
+        { name: "Discord", icon: "fa-brands fa-discord", type: "std", patriotName: "СкрепКорд", blocked: false, isCloned: false },
+        { name: "Steam", icon: "fa-brands fa-steam", type: "std", patriotName: "ПаровойДвижок", blocked: false, isCloned: false },
+        { name: "Telegram", icon: "fa-brands fa-telegram", type: "std", patriotName: "Телеграмма", blocked: false, isCloned: false },
+        { name: "VPN-Сервис", icon: "fa-solid fa-shield-halved", type: "std", patriotName: "ЩитРунета", blocked: false, isCloned: false },
+        { name: "Новогодняя Ель", icon: "fa-solid fa-tree", type: "spec", patriotName: "Скрепная Ёлка", blocked: false, isCloned: false },
+        { name: "Википедия", icon: "fa-solid fa-book-atlas", type: "std", patriotName: "Правдапедия", blocked: false, isCloned: false },
+        { name: "Облако Майл", icon: "fa-solid fa-cloud", type: "std", patriotName: "Облако-Русь", blocked: false, isCloned: false },
+        { name: "Погода Mail.ru", icon: "fa-solid fa-sun", type: "std", patriotName: "Погода-Матушка", blocked: false, isCloned: false },
+        { name: "Госуслуги", icon: "fa-solid fa-landmark", type: "spec", patriotName: "ГосСлужба", blocked: false, isCloned: false },
+        { name: "SigmaAi", icon: "Σ", type: "std", patriotName: "КрутойИИ", blocked: false, isCloned: false } // ← SigmaCode → SigmaAi
+    ];
+
+    const newsVault = [
+        "Депутаты предложили запретить использование иностранных букв в коде.",
+        "Интернет-трафик в РФ стал настолько чистым, что через него видно будущее.",
+        "Бюджет на 'Чебурнет' успешно освоен за три дня.",
+        "В Госдуме предложили выдавать интернет по талонам.",
+        "Новогодние гирлянды на Тверской признаны самыми скрепными в мире.",
+        "В Госдуме внесли законопроект о замене всех переменных в коде на «товарищ_значение».",
+        "Роскомнадзор начал блокировать Wi-Fi-сигналы, не прошедшие патриотическую экспертизу.",
+        "Программисты получили предписание писать код только на церковнославянском языке.",
+        "Интернет-провайдеры обязали шифровать трафик стихами Лермонтова для защиты от западной дезинформации.",
+        "Минцифры рекомендовало заменить все смайлы на портреты классиков русской литературы.",
+        "Гражданам разрешили использовать латиницу только по выходным и исключительно в целях молитвы.",
+        "Все хештеги в соцсетях переименованы в «#скрепа_№42».",
+        "Алгоритмы ИИ теперь обязаны начинать каждое решение с фразы: «Как говорил наш великий земляк…»",
+        "Пакет «Яндекс.Плюс» теперь включает бесплатную подписку на «Правду» 1953 года.",
+        "Госдума одобрила проект по замене облаков на отечественные — «Облако-Русь».",
+        "В России запущен первый в мире квантовый патриотический брандмауэр.",
+        "Сбербанк представил новую версию Салюта, который теперь читает указы президента вслух перед каждой операцией.",
+        "Все QR-коды заменены на штрих-коды с портретом Минина и Пожарского.",
+        "Минздрав предложил лечить цифровую зависимость чтением «Краткого курса ВКП(б)» перед сном.",
+        "В Telegram-ботах теперь обязательно присутствие модуля «духовно-нравственной ориентации».",
+        "«Звонок с незнакомого номера» признан иностранным агентом и заблокирован.",
+        "В школах введён обязательный предмет: «Патриотическое программирование на языке КуМир».",
+        "Россия первой в мире запретила использование слова «баг» — теперь это «временная особенность отечественного ПО».",
+        "Государственная система распознавания лиц теперь работает только в шапке-ушанке.",
+        "Все загрузочные экраны обязаны содержать гимн и изображение двуглавого орла в полёте.",
+        "Граждане просят замедлить время до конца праздников."
+    ];
+
+    const newsTypes = [
+        { prefix: "ТРИБУНА", color: "#3b82f6" },
+        { prefix: "СКРЕПА", color: "#ccac41" },
+        { prefix: "ПРЕДУПРЕЖДЕНИЕ", color: "#f59e0b" },
+        { prefix: "ИНФОРМ", color: "#64748b" },
+        { prefix: "ЭКСТРЕМИЗМ", color: "#ef4444" },
+        { prefix: "ПАТРИОТ", color: "#10b981" }
+    ];
+
+    let money = 0;
+    let blocksCount = 0;
+    let trust = 100;
+    let spinning = false;
+    let currentItem = null;
+    let degradationActive = false;
+    let escapeButtonShown = false;
+    let citizenInterval = null;
+    let disabledAgendaButtons = new Set();
+
+    // === АУДИО СИСТЕМА ===
+    let audioContext = null;
+    let audioBuffer = null;
+    let mainSource = null;
+    let isMainPlaying = false;
+    let hangLoop = null;
+
+    async function loadAudio() {
+        try {
+            const response = await fetch('trikoz.mp3');
+            if (!response.ok) throw new Error('Файл не найден');
+            const arrayBuffer = await response.arrayBuffer();
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+            console.log("Аудио загружено успешно");
+        } catch (e) {
+            console.error("Ошибка загрузки trikoz.mp3:", e);
+            alert("Не удалось загрузить музыку. Убедитесь, что файл «trikoz.mp3» находится в той же папке.");
+        }
+    }
+
+    function playMainAudio() {
+        if (!audioBuffer || !audioContext) return;
+        stopHangAudio();
+        mainSource = audioContext.createBufferSource();
+        mainSource.buffer = audioBuffer;
+        mainSource.loop = true;
+        mainSource.connect(audioContext.destination);
+        mainSource.start(0);
+        isMainPlaying = true;
+    }
+
+    function stopMainAudio() {
+        if (mainSource) {
+            mainSource.stop();
+            mainSource = null;
+            isMainPlaying = false;
+        }
+    }
+
+    function startHangAudio() {
+        if (!audioBuffer || !audioContext) return;
+        stopMainAudio();
+        const hangDuration = 0.3;
+        const sampleRate = audioBuffer.sampleRate;
+        const numChannels = audioBuffer.numberOfChannels;
+        const length = Math.floor(hangDuration * sampleRate);
+        const hangBuffer = audioContext.createBuffer(numChannels, length, sampleRate);
+        const startTime = 10;
+        const startOffset = Math.min(Math.floor(startTime * sampleRate), audioBuffer.length - length);
+        for (let channel = 0; channel < numChannels; channel++) {
+            const sourceData = audioBuffer.getChannelData(channel);
+            const hangData = hangBuffer.getChannelData(channel);
+            for (let i = 0; i < length; i++) {
+                hangData[i] = sourceData[startOffset + i] || 0;
+            }
+        }
+        function playHang() {
+            const source = audioContext.createBufferSource();
+            source.buffer = hangBuffer;
+            source.loop = false;
+            source.connect(audioContext.destination);
+            source.start(0);
+            source.onended = () => {
+                if (hangLoop) playHang();
+            };
+        }
+        hangLoop = setInterval(playHang, hangDuration * 1000);
+        playHang();
+    }
+
+    function stopHangAudio() {
+        if (hangLoop) {
+            clearInterval(hangLoop);
+            hangLoop = null;
+        }
+    }
+
+    // === СНЕГ ===
+    const canvas = document.getElementById('snow-layer');
+    const ctx = canvas.getContext('2d');
+    let flakes = [];
+
+    function initSnow() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        flakes = Array.from({length: 80}, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 3 + 1,
+            d: Math.random() * 1 + 0.3
+        }));
+    }
+
+    function drawSnow() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+        flakes.forEach(f => {
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+            ctx.fill();
+            f.y += f.d;
+            if (f.y > canvas.height) f.y = -10;
+        });
+        requestAnimationFrame(drawSnow);
+    }
+
+    // === РУЛЕТКА ===
+    function generateTape() {
+        const tape = document.getElementById('tape');
+        tape.innerHTML = '';
+        for (let i = 0; i < 70; i++) {
+            const availableTargets = targets.filter(t => !t.blocked);
+            if (availableTargets.length === 0) break;
+            
+            const t = availableTargets[Math.floor(Math.random() * availableTargets.length)];
+            const displayName = t.isCloned ? t.patriotName : t.name;
+            
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            
+            if (t.icon === "Σ") {
+                card.innerHTML = `<div class="sigma-icon">Σ</div><span>${displayName}</span>`;
+            } else {
+                card.innerHTML = `<i class="${t.icon}"></i><span>${displayName}</span>`;
+            }
+            
+            tape.appendChild(card);
+        }
+    }
+
+    function startSpin() {
+        if (spinning) return;
+        spinning = true;
+        
+        const btn = document.getElementById('spin-btn');
+        const tape = document.getElementById('tape');
+        const stamp = document.getElementById('stamp-ui');
+        const status = document.getElementById('status-label');
+
+        btn.disabled = true;
+        stamp.classList.remove('show');
+        document.querySelectorAll('.action-btns').forEach(el => el.style.display = 'none');
+        status.innerText = "АНАЛИЗ КОНТЕНТА НА ЭКСТРЕМИЗМ...";
+        
+        tape.style.transition = 'none';
+        tape.style.transform = 'translateX(0)';
+        generateTape();
+
+        setTimeout(() => {
+            const itemWidth = 180;
+            const winningIndex = 50 + Math.floor(Math.random() * 10);
+            const winNode = tape.children[winningIndex];
+            
+            const displayedName = winNode.querySelector('span').innerText;
+            let foundTarget = targets.find(t => 
+                (!t.blocked) && (t.name === displayedName || t.patriotName === displayedName)
+            );
+            if (!foundTarget) {
+                foundTarget = targets.find(t => !t.blocked) || targets[0];
+            }
+            currentItem = foundTarget;
+            
+            const viewportWidth = document.querySelector('.roulette-viewport').offsetWidth;
+            const targetPos = (winningIndex * itemWidth) - (viewportWidth / 2) + (itemWidth / 2);
+
+            tape.style.transition = 'transform 4s cubic-bezier(0.1, 0, 0.1, 1)';
+            tape.style.transform = `translateX(-${targetPos}px)`;
+
+            setTimeout(() => {
+                spinning = false;
+                btn.disabled = false;
+                status.innerText = `ВЫБРАН ОБЪЕКТ: ${currentItem.isCloned ? currentItem.patriotName : currentItem.name}`;
+                
+                if (currentItem.type === 'spec') {
+                    document.getElementById('group-special').style.display = 'flex';
+                } else if (currentItem.isCloned) {
+                    // Показываем кнопки для патриотического аналога
+                    document.getElementById('group-patriot').style.display = 'flex';
+                } else {
+                    document.getElementById('group-standard').style.display = 'flex';
+                }
+            }, 4100);
+        }, 50);
+    }
+
+    // === ЛОГИКА ИГРЫ ===
+    function apply(type) {
+        const stamp = document.getElementById('stamp-ui');
+        
+        const targetIndex = targets.findIndex(t => t.name === currentItem.name);
+        if (targetIndex === -1) return;
+
+        const actions = {
+            'ban': { 
+                label: 'БАН', 
+                color: '#d32f2f', 
+                log: `Сервис ${currentItem.name} отправлен в цифровой ГУЛАГ.`, 
+                trustChange: -10, 
+                logType: "ЭКСТРЕМИЗМ",
+                effect: () => {
+                    targets[targetIndex].blocked = true;
+                }
+            },
+            'slow': { label: 'МЕДЛЕННО', color: '#f59e0b', log: `Скорость ${currentItem.name} снижена до уровня почтовых голубей.`, trustChange: -5, logType: "ПРЕДУПРЕЖДЕНИЕ", blocksChange: 5 },
+            'clone': { 
+                label: 'ИМПОРТ', 
+                color: '#2e7d32', 
+                getLog: () => {
+                    const patriotName = currentItem.patriotName || `НашСервис от ${currentItem.name}`;
+                    return `Вместо ${currentItem.name} запущен отечественный аналог: «${patriotName}».`;
+                },
+                trustChange: -2, 
+                logType: "ИНФОРМ",
+                effect: () => {
+                    targets[targetIndex].isCloned = true;
+                }
+            },
+            'tree': { label: 'УРА!', color: '#2e7d32', log: `Депутаты похлопали в ладоши вокруг елочки. Красиво!`, trustChange: 15, logType: "СКРЕПА", blocksChange: 10 },
+            'money': { label: 'ГРАНТ', color: '#d32f2f', log: `Получено 500 млн на изучение влияния ${currentItem.name} на молодежь.`, trustChange: -1, logType: "ПРЕДУПРЕЖДЕНИЕ", moneyChange: 500 },
+            'complain': { label: 'ЖАЛОБА', color: '#8b5cf6', log: `Подана жалоба на СМИ за недостоверную информацию о ${currentItem.name}.`, trustChange: 10, logType: "ПАТРИОТ", blocksChange: 8 },
+            'weather': { label: 'ПОГОДА', color: '#d32f2f', log: `Погода заблокирована за пропаганду глобального потепления.`, trustChange: -8, logType: "ЭКСТРЕМИЗМ", blocksChange: 15 },
+            'report': { label: 'УСПЕХ', color: '#2e7d32', log: `Опубликован отчет: "Все хорошо, даже лучше!"`, trustChange: 15, logType: "СКРЕПА", moneyChange: -50, blocksChange: 20 },
+            'hide': { label: 'СКРЫТО', color: '#f59e0b', log: `Статистика скрыта ради общественного спокойствия.`, trustChange: 5, logType: "ИНФОРМ", blocksChange: -10 }
+        };
+
+        const config = actions[type];
+        if (!config) return;
+
+        if (config.effect) config.effect();
+
+        stamp.innerText = config.label;
+        stamp.style.borderColor = config.color;
+        stamp.style.color = config.color;
+        stamp.classList.add('show');
+
+        const logTypeObj = newsTypes.find(t => t.prefix === config.logType) || newsTypes[0];
+        const logMessage = config.getLog ? config.getLog() : config.log;
+        addLog(`${config.logType}: ${logMessage}`, logTypeObj.color);
+
+        blocksCount += (config.blocksChange || 0);
+        money += (config.moneyChange || (Math.floor(Math.random() * 100) + 50));
+        trust = Math.max(0, Math.min(100, trust + config.trustChange));
+        
+        updateStats();
+        generateTape();
+
+        setTimeout(() => {
+            document.querySelectorAll('.action-btns').forEach(el => el.style.display = 'none');
+        }, 800);
+    }
+
+    // === НОВЫЕ ДЕЙСТВИЯ ДЛЯ ПАТРИОТИЧЕСКИХ АНАЛОГОВ ===
+    function patriotAction(action) {
+        const actions = {
+            'ads': {
+                log: `В ${currentItem.patriotName} напихано 50+ баннеров. Доход +50 млн.`,
+                moneyChange: 50,
+                trustChange: -10,
+                logType: "ПРЕДУПРЕЖДЕНИЕ",
+                color: "#f59e0b"
+            },
+            'max': {
+                log: `К ${currentItem.patriotName} привязан МАКС. Доверие +15, очистка +20%.`,
+                trustChange: 15,
+                moneyChange: -30,
+                blocksChange: 20,
+                logType: "СКРЕПА",
+                color: "#ccac41"
+            },
+            'praise': {
+                log: `${currentItem.patriotName} восхваляется в СМИ. Очистка +30%, но бюджет истощён.`,
+                moneyChange: -40,
+                trustChange: -15,
+                blocksChange: 30,
+                logType: "ИНФОРМ",
+                color: "#64748b"
+            }
+        };
+
+        const config = actions[action];
+        if (!config) return;
+
+        addLog(`${config.logType}: ${config.log}`, config.color);
+        money += config.moneyChange || 0;
+        trust += config.trustChange || 0;
+        blocksCount += config.blocksChange || 0;
+
+        money = Math.max(0, money);
+        trust = Math.max(0, Math.min(100, trust));
+        blocksCount = Math.max(0, blocksCount);
+
+        updateStats();
+
+        setTimeout(() => {
+            document.querySelectorAll('.action-btns').forEach(el => el.style.display = 'none');
+        }, 800);
+    }
+
+    function getTruthNews() {
+        const type = newsTypes[Math.floor(Math.random() * newsTypes.length)];
+        const msg = newsVault[Math.floor(Math.random() * newsVault.length)];
+        addLog(`${type.prefix}: ${msg}`, type.color);
+        money += 5;
+        trust -= 2;
+        updateStats();
+    }
+
+    function addLog(msg, color = "#cbd5e1") {
+        const feed = document.getElementById('news-feed');
+        const li = document.createElement('li');
+        li.className = 'news-entry';
+        li.innerHTML = `[${new Date().toLocaleTimeString()}] ${msg}`;
+        li.style.color = color;
+        feed.prepend(li);
+    }
+
+    // === ПОВЕСТКА ДНЯ ===
+    function agendaAction(action) {
+        let log = "";
+        let logType = "ИНФОРМ";
+        let color = "#64748b";
+
+        switch(action) {
+            case 'salary':
+                money += 50;
+                trust -= 15;
+                log = "Зарплаты депутатам повышены. Бюджет пополнен.";
+                logType = "ПРЕДУПРЕЖДЕНИЕ";
+                color = "#f59e0b";
+                break;
+            case 'thoughts':
+                trust += 20;
+                money -= 30;
+                log = "Плохие мысли запрещены. Граждане теперь думают только позитивно.";
+                logType = "СКРЕПА";
+                color = "#ccac41";
+                break;
+            case 'poll':
+                const change = Math.floor(Math.random() * 41) - 20;
+                trust += change;
+                log = change >= 0 
+                    ? `Опрос показал рост доверия (+${change}%)!` 
+                    : `Опрос выявил недовольство (${change}%)...`;
+                logType = change >= 0 ? "ПАТРИОТ" : "ПРЕДУПРЕЖДЕНИЕ";
+                color = change >= 0 ? "#10b981" : "#f59e0b";
+                break;
+            case 'tree-gift':
+                trust += 10;
+                money -= 5;
+                log = "Елки подарены всем школам. Дети счастливы!";
+                logType = "СКРЕПА";
+                color = "#ccac41";
+                break;
+            case 'cyber-war':
+                blocksCount += 30;
+                trust -= 25;
+                log = "Объявлена кибер-чрезвычайная ситуация. Сеть чище, но граждане напуганы.";
+                logType = "ЭКСТРЕМИЗМ";
+                color = "#ef4444";
+                break;
+            case 'media-bribe':
+                if (money < 50) {
+                    addLog("ПРЕДУПРЕЖДЕНИЕ: Недостаточно средств для подкупа СМИ!", "#f59e0b");
+                    return;
+                }
+                money -= 50;
+                trust += 15;
+                log = "СМИ получили 'благотворительный грант'. Теперь все новости — позитивные!";
+                logType = "СКРЕПА";
+                color = "#ccac41";
+                break;
+            case 'patriot-law':
+                trust += 25;
+                money -= 40;
+                log = "Принят закон 'О духовно-нравственном воспитании'. Доверие растёт!";
+                logType = "ПАТРИОТ";
+                color = "#10b981";
+                break;
+            case 'crypto-ban':
+                blocksCount += 20;
+                trust -= 10;
+                log = "Криптовалюты признаны иностранным агентом и заблокированы.";
+                logType = "ЭКСТРЕМИЗМ";
+                color = "#ef4444";
+                break;
+            case 'ai-control':
+                trust += 10;
+                money -= 20;
+                log = "Искусственный интеллект поставлен под контроль Минцифры. Безопасность обеспечена.";
+                logType = "ИНФОРМ";
+                color = "#64748b";
+                break;
+        }
+
+        money = Math.max(0, money);
+        trust = Math.max(0, Math.min(100, trust));
+        blocksCount = Math.max(0, blocksCount);
+
+        addLog(`${logType}: ${log}`, color);
+        updateStats();
+    }
+
+    // === СООБЩЕНИЯ ОТ ЖИТЕЛЕЙ ===
+    const citizenMessages = [
+        {
+            text: "У вас бюджет {money} млн ₽! Вы можете выделить 30 млн на модернизацию больниц для снижения смертности?",
+            good: { money: -30, trust: 15, log: "Выделены средства на больницы. Смертность падает!" },
+            bad: { money: 20, trust: -10, log: "Средства присвоены. Больницы закрываются." }
+        },
+        {
+            text: "Школы нуждаются в новых компьютерах! Выделите 25 млн ₽?",
+            good: { money: -25, trust: 12, log: "Школы получили технику. Ученики счастливы!" },
+            bad: { money: 15, trust: -8, log: "Компьютеры проданы. Школы используют абаки." }
+        },
+        {
+            text: "Пенсионеры просят индексацию пенсий (+40 млн ₽). Согласны?",
+            good: { money: -40, trust: 20, log: "Пенсии проиндексированы. Старшее поколение благодарит!" },
+            bad: { money: 25, trust: -15, log: "Пенсии заморожены. Пенсионеры ушли в лес." }
+        },
+        {
+            text: "Наука задыхается! Выделите 35 млн ₽ на исследования?",
+            good: { money: -35, trust: 18, log: "Учёные открыли новый элемент — 'Скрепий'!" },
+            bad: { money: 20, trust: -12, log: "Лаборатории превращены в склады." }
+        },
+        {
+            text: "Дороги разваливаются! Требуется 50 млн ₽ на ремонт.",
+            good: { money: -50, trust: 25, log: "Дороги отремонтированы. Машины едут без тряски!" },
+            bad: { money: 30, trust: -20, log: "Дороги переданы в частные руки. Теперь платные ямы." }
+        },
+        {
+            text: "Экологи требуют 20 млн ₽ на очистку рек.",
+            good: { money: -20, trust: 10, log: "Реки чисты! Рыба поёт гимн." },
+            bad: { money: 10, trust: -7, log: "Реки признаны иностранным агентом и заблокированы." }
+        },
+        {
+            text: "Молодёжь просит создать IT-парк за 45 млн ₽!",
+            good: { money: -45, trust: 22, log: "IT-парк открыт! Молодёжь создаёт 'Скрепа-Онлайн'." },
+            bad: { money: 25, trust: -14, log: "IT-парк стал казино. Молодёжь играет в 'Гослото'." }
+        },
+        {
+            text: "Необходимо 30 млн ₽ на поддержку театров и музеев.",
+            good: { money: -30, trust: 16, log: "Театры переполнены! Спектакль 'Скрепа и Госплан' — хит сезона." },
+            bad: { money: 18, trust: -10, log: "Театры закрыты. Актёры играют в Telegram-ботах." }
+        },
+        {
+            text: "Фермеры просят 25 млн ₽ на развитие сельского хозяйства.",
+            good: { money: -25, trust: 14, log: "Хлеб дешёвый! Картошка — золотая!" },
+            bad: { money: 15, trust: -9, log: "Фермеры заменены на импортные овощи-агенты." }
+        },
+        {
+            text: "Нужно 40 млн ₽ на строительство детских площадок.",
+            good: { money: -40, trust: 20, log: "Дети счастливы! Горки — из чистого патриотизма." },
+            bad: { money: 25, trust: -15, log: "Площадки переделаны под парковки для депутатов." }
+        },
+        {
+            text: "Учёные просят 30 млн ₽ на квантовый компьютер.",
+            good: { money: -30, trust: 18, log: "Квантовый компьютер предсказал победу на выборах!" },
+            bad: { money: 20, trust: -12, log: "Квантовый компьютер продан Китаю за биткоины." }
+        },
+        {
+            text: "Необходимо 35 млн ₽ на бесплатный Wi-Fi в парках.",
+            good: { money: -35, trust: 17, log: "Wi-Fi в парках! Но только на одобренных сайтах." },
+            bad: { money: 20, trust: -13, log: "Wi-Fi заменён на радио 'Голос России'." }
+        }
+    ];
+
+    function showCitizenMessage() {
+        if (money <= 0) return;
+
+        const popup = document.getElementById('citizen-popup');
+        const messageEl = document.getElementById('citizen-message');
+
+        const msg = citizenMessages[Math.floor(Math.random() * citizenMessages.length)];
+        const text = msg.text.replace("{money}", money);
+        messageEl.innerText = text;
+        popup.style.display = 'block';
+
+        setTimeout(() => {
+            if (popup.style.display !== 'none') {
+                popup.style.display = 'none';
+            }
+        }, 15000);
+    }
+
+    function citizenChoice(choice) {
+        const popup = document.getElementById('citizen-popup');
+        popup.style.display = 'none';
+
+        const currentText = document.getElementById('citizen-message').innerText;
+        const msg = citizenMessages.find(m => m.text.replace("{money}", money) === currentText);
+
+        if (!msg) return;
+
+        const effect = choice === 'good' ? msg.good : msg.bad;
+        
+        money += effect.money;
+        trust += effect.trust;
+        money = Math.max(0, money);
+        trust = Math.max(0, Math.min(100, trust));
+
+        addLog(`ОБРАЩЕНИЕ ГРАЖДАНИНА: ${effect.log}`, choice === 'good' ? "#10b981" : "#ef4444");
+        updateStats();
+
+        if (choice === 'bad') {
+            const agendaButtons = Array.from(document.querySelectorAll('.agenda-buttons .btn'));
+            const activeButtons = agendaButtons.filter(btn => !btn.disabled && !btn.classList.contains('exploding'));
+            
+            if (activeButtons.length > 0) {
+                const randomBtn = activeButtons[Math.floor(Math.random() * activeButtons.length)];
+                randomBtn.disabled = true;
+                randomBtn.classList.add('exploding');
+                randomBtn.title = "Сломано";
+                disabledAgendaButtons.add(randomBtn);
+            }
+        }
+    }
+
+    function startCitizenMessages() {
+        if (citizenInterval) clearInterval(citizenInterval);
+        citizenInterval = setInterval(() => {
+            if (money > 0 && Math.random() < 0.3) {
+                showCitizenMessage();
+            }
+        }, 20000);
+    }
+
+    // === ВИБРАЦИЯ ПО ДОВЕРИЮ ===
+    function getVibrationLevel(trust) {
+        if (trust >= 95) return 0;
+        if (trust >= 85) return 1;
+        if (trust >= 75) return 2;
+        if (trust >= 50) return 3;
+        if (trust >= 25) return 4;
+        return 5;
+    }
+
+    function applyVibration() {
+        const area = document.getElementById('vibrating-area');
+        area.className = area.className.replace(/vibrate-\d+/g, '').trim();
+        const level = getVibrationLevel(trust);
+        area.classList.add(`vibrate-${level}`);
+    }
+
+    // === ФОН ПО ДОВЕРИЮ ===
+    function updateBackground() {
+        const ratio = trust / 100;
+        const r = Math.round(15 * ratio + 74 * (1 - ratio));
+        const g = Math.round(23 * ratio + 0 * (1 - ratio));
+        const b = Math.round(42 * ratio + 0 * (1 - ratio));
+        document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+    }
+
+    // === ДИНАМИЧЕСКАЯ ДЕГРАДАЦИЯ ===
+    function degradeStep() {
+        if (trust <= 0) {
+            degradationActive = false;
+            checkGameOver();
+            return;
+        }
+
+        let decrement = 0;
+        let delay = 2000;
+
+        if (trust <= 1) {
+            decrement = 1.0;
+            delay = 500;
+        } else if (trust <= 2) {
+            decrement = 0.5;
+            delay = 1000;
+        } else if (trust <= 5) {
+            decrement = 0.2;
+            delay = 1500;
+        } else if (trust <= 10) {
+            decrement = 0.1;
+            delay = 2000;
+        } else {
+            degradationActive = false;
+            return;
+        }
+
+        trust = parseFloat((trust - decrement).toFixed(1));
+        if (trust < 0) trust = 0;
+        updateStats();
+
+        if (trust > 0 && trust <= 10) {
+            setTimeout(degradeStep, delay);
+        } else {
+            degradationActive = false;
+        }
+    }
+
+    function startDegradation() {
+        if (degradationActive) return;
+        degradationActive = true;
+        degradeStep();
+    }
+function checkVictory() {
+    if (citizenInterval) clearInterval(citizenInterval);
+    stopMainAudio(); // Остановить основную музыку
+    // Можно добавить победную мелодию, но оставим просто тишину
+    
+    document.getElementById('main-content').style.display = 'none';
+    const victoryScreen = document.getElementById('victory-screen');
+    victoryScreen.style.display = 'block';
+    
+    document.getElementById('award-btn').onclick = () => location.reload();
+}
+    // === ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ===
+    function updateStats() {
+    document.getElementById('stat-money').innerText = `${money} МЛН ₽`;
+    document.getElementById('stat-blocks').innerText = `${Math.max(0, Math.min(100, blocksCount))}%`;
+    const trustEl = document.getElementById('stat-trust');
+    trustEl.innerText = `${trust}%`;
+    trustEl.style.color = trust < 20 ? 'var(--danger)' : 'var(--rkn-gold)';
+    
+    applyVibration();
+    updateBackground();
+    
+    // Сломанная аппаратура при trust <= 10%
+    const brokenEq = document.getElementById('broken-equipment');
+    if (trust <= 10) {
+        brokenEq.style.display = 'block';
+    } else {
+        brokenEq.style.display = 'none';
+    }
+    
+    // Кнопка побега
+    const escapeBtn = document.getElementById('escape-btn');
+    if (trust <= 10 && !escapeButtonShown) {
+        escapeBtn.style.display = 'block';
+        escapeButtonShown = true;
+        startDegradation();
+    } else if (trust > 10 && escapeButtonShown) {
+        escapeBtn.style.display = 'none';
+        escapeButtonShown = false;
+        degradationActive = false;
+    }
+    
+    // === ПРОВЕРКА НА ПОБЕДУ ===
+    if (blocksCount >= 100) {
+        checkVictory();
+    }
+    
+    if (trust <= 0) {
+        checkGameOver();
+    }
+}
+
+    function checkGameOver() {
+        if (degradationActive) degradationActive = false;
+        if (citizenInterval) clearInterval(citizenInterval);
+        startHangAudio();
+        document.getElementById('main-content').style.display = 'none';
+        const bsod = document.getElementById('bsod');
+        bsod.style.display = 'block';
+        setTimeout(() => bsod.classList.add('bsod-shake'), 100);
+        document.getElementById('reboot-btn').onclick = () => location.reload();
+    }
+
+    function escapeFromDuma() {
+        if (citizenInterval) clearInterval(citizenInterval);
+        stopMainAudio();
+        stopHangAudio();
+        document.getElementById('main-content').style.display = 'none';
+        document.getElementById('escape-screen').style.display = 'block';
+    }
+
+    // === АУДИО ===
+    function toggleAudio(e) {
+        if (e) e.stopPropagation();
+        
+        if (!audioBuffer) {
+            alert("Музыка не загружена. Убедитесь, что файл «trikoz.mp3» рядом.");
+            return;
+        }
+        
+        if (isMainPlaying) {
+            stopMainAudio();
+            document.querySelector('.music-toggle').classList.remove('music-playing');
+        } else {
+            playMainAudio();
+            document.querySelector('.music-toggle').classList.add('music-playing');
+        }
+    }
+
+    // === КНОПКИ ПЕРЕЗАПУСКА ===
+    document.getElementById('restart-btn').onclick = () => {
+        stopMainAudio();
+        stopHangAudio();
+        location.reload();
+    };
+    document.getElementById('reboot-btn').onclick = () => {
+        stopMainAudio();
+        stopHangAudio();
+        location.reload();
+    };
+
+    // === ЗАПУСК ===
+    window.onload = () => {
+        initSnow();
+        drawSnow();
+        generateTape();
+        updateStats();
+        startCitizenMessages();
+        loadAudio();
+    };
+    
+    window.onresize = initSnow;
+</script>
+<!-- ЭКРАН ПОБЕДЫ -->
+<div id="victory-screen" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+    color: #ccac41;
+    font-family: 'Segoe UI', monospace;
+    z-index: 10000;
+    text-align: center;
+    padding: 50px;
+    box-sizing: border-box;
+">
+    <div style="font-size: 8rem; margin: 40px 0;">🇷🇺</div>
+    <h2 style="font-size: 2.8rem; margin: 20px 0;">ПОБЕДА!</h2>
+    <p style="font-size: 1.4rem; max-width: 800px; margin: 0 auto 50px; line-height: 1.6;">
+        Рунет полностью очищен!<br>
+        Теперь в нём только одобренный контент и патриотичные мемы.<br>
+        Вы — герой цифровой эпохи!
+    </p>
+    <button id="award-btn" style="
+        background: var(--rkn-gold);
+        color: #000;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.3rem;
+        border-radius: 8px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        box-shadow: 0 6px 0 #9e8532;
+    ">НАГРАДИТЬ СЕБЯ ОРДЕНОМ</button>
+</div>
+</body>
+</html>
+
