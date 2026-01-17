@@ -419,7 +419,8 @@
             font-size: 0.9rem;
         }
 
-        .news-section, .agenda-section {
+        /* === ПОВЕСТКА ДНЯ === */
+        .agenda-section {
             margin-top: 30px;
             background: rgba(0, 0, 0, 0.4);
             padding: 20px;
@@ -427,7 +428,44 @@
             border-left: 5px solid var(--rkn-blue);
         }
 
-        .news-title, .agenda-title {
+        .agenda-title {
+            margin-top: 0;
+            color: var(--rkn-gold);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.2rem;
+        }
+
+        .agenda-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .agenda-buttons .btn {
+            padding: 8px 12px;
+            font-size: 0.82rem;
+            width: auto;
+            max-width: 140px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* === НОВОСТИ === */
+        .news-section {
+            margin-top: 25px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid var(--rkn-blue);
+        }
+
+        .news-title {
             margin-top: 0;
             color: var(--rkn-gold);
             display: flex;
@@ -439,7 +477,7 @@
         #news-feed {
             list-style: none;
             padding: 0;
-            max-height: 250px;
+            max-height: 160px; /* ← Короче, как было раньше */
             overflow-y: auto;
         }
 
@@ -532,20 +570,6 @@
             border-radius: 4px;
         }
 
-        .agenda-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .agenda-buttons .btn {
-            padding: 10px 15px;
-            font-size: 0.85rem;
-            width: auto;
-            max-width: none;
-        }
-
         /* === BSOD === */
         .bsod-shake {
             animation: bsodShake 0.1s infinite;
@@ -590,6 +614,43 @@
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 2px;
+        }
+
+        /* === VICTORY SCREEN === */
+        #victory-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #ccac41;
+            font-family: 'Segoe UI', monospace;
+            z-index: 10000;
+            text-align: center;
+            padding: 50px;
+            box-sizing: border-box;
+        }
+        #victory-screen h2 {
+            font-size: 2.8rem;
+            margin: 20px 0;
+        }
+        #victory-screen p {
+            font-size: 1.4rem;
+            max-width: 800px;
+            margin: 0 auto 50px;
+            line-height: 1.6;
+        }
+        #award-btn {
+            background: var(--rkn-gold);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 6px 0 #9e8532;
         }
 
         /* === СЛОМАННАЯ АППАРАТУРА === */
@@ -646,177 +707,173 @@
             z-index: 200;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+
         /* === МОБИЛЬНАЯ АДАПТАЦИЯ === */
-@media (max-width: 768px) {
-    body {
-        font-size: 14px;
-    }
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
 
-    header {
-        padding: 15px;
-    }
-    h1.main-title {
-        font-size: 1.6rem;
-    }
-    .subtitle {
-        font-size: 0.75rem;
-        letter-spacing: 2px;
-    }
+            header {
+                padding: 15px;
+            }
+            h1.main-title {
+                font-size: 1.6rem;
+            }
+            .subtitle {
+                font-size: 0.75rem;
+                letter-spacing: 2px;
+            }
 
-    .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-        margin-bottom: 20px;
-    }
-    .stat-value {
-        font-size: 1.5rem;
-    }
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+            .stat-value {
+                font-size: 1.5rem;
+            }
 
-    .casino-block {
-        padding: 20px;
-        border-radius: 16px;
-    }
+            .casino-block {
+                padding: 20px;
+                border-radius: 16px;
+            }
 
-    .status-label {
-        font-size: 1rem;
-        margin-bottom: 10px;
-    }
+            .status-label {
+                font-size: 1rem;
+                margin-bottom: 10px;
+            }
 
-    /* Вертикальная рулетка на мобильных */
-    .roulette-viewport {
-        height: 120px;
-        border-width: 6px;
-        margin-bottom: 20px;
-    }
+            .roulette-viewport {
+                height: 120px;
+                border-width: 6px;
+                margin-bottom: 20px;
+            }
 
-    #tape {
-        flex-direction: column;
-        width: 100%;
-        height: auto;
-    }
-    .item-card {
-        min-width: 100%;
-        height: 80px;
-        flex-direction: row;
-        justify-content: flex-start;
-        padding: 0 15px;
-    }
-    .item-card i,
-    .sigma-icon {
-        font-size: 1.8rem !important;
-        margin: 0 10px 0 0 !important;
-        height: auto !important;
-    }
-    .item-card span {
-        font-size: 0.95rem;
-    }
+            #tape {
+                flex-direction: column;
+                width: 100%;
+                height: auto;
+            }
+            .item-card {
+                min-width: 100%;
+                height: 80px;
+                flex-direction: row;
+                justify-content: flex-start;
+                padding: 0 15px;
+            }
+            .item-card i,
+            .sigma-icon {
+                font-size: 1.8rem !important;
+                margin: 0 10px 0 0 !important;
+                height: auto !important;
+            }
+            .item-card span {
+                font-size: 0.95rem;
+            }
 
-    .btn-container {
-        gap: 15px;
-    }
-    .btn {
-        padding: 12px 20px;
-        font-size: 0.9rem;
-        gap: 8px;
-    }
-    .btn-main {
-        font-size: 1.1rem;
-        padding: 14px 25px;
-    }
+            .btn-container {
+                gap: 15px;
+            }
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+                gap: 8px;
+            }
+            .btn-main {
+                font-size: 1.1rem;
+                padding: 14px 25px;
+            }
 
-    .news-section, .agenda-section {
-        padding: 15px;
-        margin-top: 20px;
-    }
-    .news-title, .agenda-title {
-        font-size: 1.1rem;
-    }
-    .news-entry {
-        font-size: 0.85rem;
-        padding: 8px;
-    }
+            .agenda-buttons {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            .agenda-buttons .btn {
+                padding: 6px 8px;
+                font-size: 0.75rem;
+                max-width: 120px;
+            }
 
-    .agenda-buttons {
-        gap: 8px;
-    }
-    .agenda-buttons .btn {
-        padding: 8px 12px;
-        font-size: 0.8rem;
-    }
+            #news-feed {
+                max-height: 120px;
+            }
 
-    .music-toggle {
-        width: 50px;
-        height: 50px;
-        bottom: 15px;
-        right: 15px;
-    }
-    .music-toggle i {
-        font-size: 1.2rem;
-    }
+            .news-section, .agenda-section {
+                padding: 15px;
+                margin-top: 20px;
+            }
+            .news-title, .agenda-title {
+                font-size: 1.1rem;
+            }
+            .news-entry {
+                font-size: 0.85rem;
+                padding: 8px;
+            }
 
-    .btn-escape {
-        bottom: 80px;
-        right: 15px;
-        padding: 8px 15px;
-        font-size: 0.8rem;
-    }
+            .btn-escape {
+                bottom: 80px;
+                right: 15px;
+                padding: 8px 15px;
+                font-size: 0.8rem;
+            }
 
-    /* Попапы */
-    #citizen-popup {
-        bottom: 150px;
-        padding: 15px;
-        max-width: 90%;
-    }
-    #citizen-popup button {
-        padding: 8px 15px;
-        font-size: 0.85rem;
-    }
+            #citizen-popup {
+                bottom: 150px;
+                padding: 15px;
+                max-width: 90%;
+            }
+            #citizen-popup button {
+                padding: 8px 15px;
+                font-size: 0.85rem;
+            }
 
-    /* BSOD и победа */
-    #bsod, #victory-screen, #escape-screen {
-        padding: 20px;
-    }
-    #bsod h2, #victory-screen h2, #escape-screen h2 {
-        font-size: 2rem;
-    }
-    #bsod p, #victory-screen p, #escape-screen p {
-        font-size: 1.1rem;
-    }
-    #restart-btn, #reboot-btn, #award-btn {
-        padding: 12px 30px;
-        font-size: 1.1rem;
-    }
-}
+            #bsod, #victory-screen, #escape-screen {
+                padding: 20px;
+            }
+            #bsod h2, #victory-screen h2, #escape-screen h2 {
+                font-size: 2rem;
+            }
+            #bsod p, #victory-screen p, #escape-screen p {
+                font-size: 1.1rem;
+            }
+            #restart-btn, #reboot-btn, #award-btn {
+                padding: 12px 30px;
+                font-size: 1.1rem;
+            }
+        }
 
-/* === Очень маленькие экраны (iPhone SE) === */
-@media (max-width: 480px) {
-    .item-card {
-        height: 70px;
-    }
-    .item-card i,
-    .sigma-icon {
-        font-size: 1.6rem !important;
-    }
-    .stat-value {
-        font-size: 1.3rem;
-    }
-    .btn {
-        padding: 10px 15px;
-        font-size: 0.85rem;
-    }
-}
+        @media (max-width: 480px) {
+            .item-card {
+                height: 70px;
+            }
+            .item-card i,
+            .sigma-icon {
+                font-size: 1.6rem !important;
+            }
+            .stat-value {
+                font-size: 1.3rem;
+            }
+            .btn {
+                padding: 10px 15px;
+                font-size: 0.85rem;
+            }
+            .agenda-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
 
 <!-- ДИСКЛЕЙМЕР -->
 <div id="disclaimer">
-    <h2>ДИСКЛЕЙМЕР</h2>
+    <h2>ВНИМАНИЕ: САТИРИЧЕСКИЙ ПРОЕКТ</h2>
     <p>
         Данный симулятор создан исключительно в юмористических и сатирических целях.
         Все события, персонажи и организации вымышлены или использованы в ироническом контексте.
-        Автор не призывает к каким-либо действиям и не несёт ответственности за интерпретацию. 
-        Музыку автор не признаёт своей, все права на неё Трикоза Евгения Сергеевича(ПРИЗНАН ИНОАГЕНТОМ РФ)
+        Автор не призывает к каким-либо действиям и не несёт ответственности за интерпретацию.
+        Все права на музыку принадлежат Евгению Трикозу, автор себе их не присваивает.
     </p>
     <button id="accept-btn">Я ПОНИМАЮ, ЧТО ЭТО ШУТКА</button>
 </div>
@@ -881,7 +938,6 @@
                     <button class="btn btn-yellow" onclick="apply('hide')">СКРЫТЬ СТАТИСТИКУ</button>
                 </div>
 
-                <!-- НОВЫЕ КНОПКИ ДЛЯ ПАТРИОТИЧЕСКИХ АНАЛОГОВ -->
                 <div id="group-patriot" class="action-btns">
                     <button class="btn btn-yellow" onclick="patriotAction('ads')">НАПИХАТЬ РЕКЛАМЫ</button>
                     <button class="btn btn-green" onclick="patriotAction('max')">ПРИВЯЗАТЬ МАКС</button>
@@ -894,17 +950,12 @@
             </div>
         </div>
 
-        <div class="news-section">
-            <h3 class="news-title"><i class="fa-solid fa-tower-broadcast"></i> СВОДКА СМИ:</h3>
-            <ul id="news-feed"></ul>
-        </div>
-
-        <!-- ПОВЕСТКА ДНЯ -->
+        <!-- ПОВЕСТКА ДНЯ (всегда ВЫШЕ новостей) -->
         <div class="agenda-section">
             <h3 class="agenda-title"><i class="fa-solid fa-list-check"></i> ПОВЕСТКА ДНЯ</h3>
             <div class="agenda-buttons">
                 <button class="btn btn-red" onclick="agendaAction('salary')">
-                    <i class="fa-solid fa-sack-dollar"></i> ЗАРПЛАТА ДЕПУТАТАМ
+                    <i class="fa-solid fa-sack-dollar"></i> З/П ДЕПУТАТАМ
                 </button>
                 <button class="btn btn-green" onclick="agendaAction('thoughts')">
                     <i class="fa-solid fa-brain"></i> ЗАПРЕТИТЬ МЫСЛИ
@@ -931,6 +982,12 @@
                     <i class="fa-solid fa-robot"></i> КОНТРОЛЬ ИИ
                 </button>
             </div>
+        </div>
+
+        <!-- НОВОСТИ -->
+        <div class="news-section">
+            <h3 class="news-title"><i class="fa-solid fa-tower-broadcast"></i> СВОДКА СМИ:</h3>
+            <ul id="news-feed"></ul>
         </div>
     </div>
 
@@ -968,6 +1025,18 @@
     но вы уже на берегу Черного моря, пьете чай и наблюдаете за закатом.<br>
     <strong>Страна горит, но вы в безопасности.</strong></p>
     <button id="restart-btn">НАЧАТЬ ЗАНОВО</button>
+</div>
+
+<!-- ЭКРАН ПОБЕДЫ -->
+<div id="victory-screen">
+    <div style="font-size: 8rem; margin: 40px 0;">🇷🇺</div>
+    <h2>ПОБЕДА!</h2>
+    <p>
+        Рунет полностью очищен!<br>
+        Теперь в нём только одобренный контент и патриотичные мемы.<br>
+        Вы — герой цифровой эпохи!
+    </p>
+    <button id="award-btn">НАГРАДИТЬ СЕБЯ ОРДЕНОМ</button>
 </div>
 
 <!-- СИНИЙ ЭКРАН СМЕРТИ -->
@@ -1017,6 +1086,7 @@
             document.getElementById('intro-screen').style.display = 'none';
             document.getElementById('main-content').classList.add('active');
             
+            // Запуск музыки
             if (audioBuffer) {
                 playMainAudio();
                 document.querySelector('.music-toggle').classList.add('music-playing');
@@ -1033,9 +1103,9 @@
         { name: "VPN-Сервис", icon: "fa-solid fa-shield-halved", type: "std", patriotName: "ЩитРунета", blocked: false, isCloned: false },
         { name: "Новогодняя Ель", icon: "fa-solid fa-tree", type: "spec", patriotName: "Скрепная Ёлка", blocked: false, isCloned: false },
         { name: "Википедия", icon: "fa-solid fa-book-atlas", type: "std", patriotName: "Правдапедия", blocked: false, isCloned: false },
-        { name: "Облако Майл", icon: "fa-solid fa-cloud", type: "std", patriotName: "Облако-Русь", blocked: false, isCloned: false },
-        { name: "Погода Mail.ru", icon: "fa-solid fa-sun", type: "std", patriotName: "Погода-Матушка", blocked: false, isCloned: false },
-        { name: "Госуслуги", icon: "fa-solid fa-landmark", type: "spec", patriotName: "ГосСлужба", blocked: false, isCloned: false }
+        { name: "Облако Google", icon: "fa-solid fa-cloud", type: "std", patriotName: "Облако-Русь", blocked: false, isCloned: false },
+        { name: "Погода Google", icon: "fa-solid fa-sun", type: "std", patriotName: "Погода-Матушка", blocked: false, isCloned: false },
+        { name: "Госуслуги", icon: "fa-solid fa-landmark", type: "spec", patriotName: "ГосСлуга", blocked: false, isCloned: false }
     ];
 
     const newsVault = [
@@ -1263,7 +1333,6 @@
                 if (currentItem.type === 'spec') {
                     document.getElementById('group-special').style.display = 'flex';
                 } else if (currentItem.isCloned) {
-                    // Показываем кнопки для патриотического аналога
                     document.getElementById('group-patriot').style.display = 'flex';
                 } else {
                     document.getElementById('group-standard').style.display = 'flex';
@@ -1274,6 +1343,8 @@
 
     // === ЛОГИКА ИГРЫ ===
     function apply(type) {
+        if (spinning) return; // Запрет дюпа
+
         const stamp = document.getElementById('stamp-ui');
         
         const targetIndex = targets.findIndex(t => t.name === currentItem.name);
@@ -1340,44 +1411,20 @@
 
     // === НОВЫЕ ДЕЙСТВИЯ ДЛЯ ПАТРИОТИЧЕСКИХ АНАЛОГОВ ===
     function patriotAction(action) {
-        const actions = {
-            'ads': {
-                log: `В ${currentItem.patriotName} напихано 50+ баннеров. Доход +50 млн.`,
-                moneyChange: 50,
-                trustChange: -10,
-                logType: "ПРЕДУПРЕЖДЕНИЕ",
-                color: "#f59e0b"
-            },
-            'max': {
-                log: `К ${currentItem.patriotName} привязан МАКС. Доверие +15, очистка +20%.`,
-                trustChange: 15,
-                moneyChange: -30,
-                blocksChange: 20,
-                logType: "СКРЕПА",
-                color: "#ccac41"
-            },
-            'praise': {
-                log: `${currentItem.patriotName} восхваляется в СМИ. Очистка +30%, но бюджет истощён.`,
-                moneyChange: -40,
-                trustChange: -15,
-                blocksChange: 30,
-                logType: "ИНФОРМ",
-                color: "#64748b"
-            }
-        };
+        if (!currentItem || !currentItem.isCloned) return;
+        
+        const config = {
+            'ads': { log: `В ${currentItem.patriotName} напихано 50+ баннеров. Доход +50 млн.`, money: 50, trust: -10, color: "#f59e0b", type: "ПРЕДУПРЕЖДЕНИЕ" },
+            'max': { log: `К ${currentItem.patriotName} привязан МАКС. Доверие +15, очистка +20%.`, money: -30, trust: 15, blocks: 20, color: "#ccac41", type: "СКРЕПА" },
+            'praise': { log: `${currentItem.patriotName} восхваляется в СМИ. Очистка +30%, бюджет -40 млн.`, money: -40, trust: -15, blocks: 30, color: "#64748b", type: "ИНФОРМ" }
+        }[action];
 
-        const config = actions[action];
         if (!config) return;
 
-        addLog(`${config.logType}: ${config.log}`, config.color);
-        money += config.moneyChange || 0;
-        trust += config.trustChange || 0;
-        blocksCount += config.blocksChange || 0;
-
-        money = Math.max(0, money);
-        trust = Math.max(0, Math.min(100, trust));
-        blocksCount = Math.max(0, blocksCount);
-
+        addLog(`${config.type}: ${config.log}`, config.color);
+        money = Math.max(0, money + (config.money || 0));
+        trust = Math.max(0, Math.min(100, trust + (config.trust || 0)));
+        blocksCount = Math.max(0, blocksCount + (config.blocks || 0));
         updateStats();
 
         setTimeout(() => {
@@ -1683,57 +1730,45 @@
         degradationActive = true;
         degradeStep();
     }
-function checkVictory() {
-    if (citizenInterval) clearInterval(citizenInterval);
-    stopMainAudio(); // Остановить основную музыку
-    // Можно добавить победную мелодию, но оставим просто тишину
-    
-    document.getElementById('main-content').style.display = 'none';
-    const victoryScreen = document.getElementById('victory-screen');
-    victoryScreen.style.display = 'block';
-    
-    document.getElementById('award-btn').onclick = () => location.reload();
-}
+
     // === ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ===
     function updateStats() {
-    document.getElementById('stat-money').innerText = `${money} МЛН ₽`;
-    document.getElementById('stat-blocks').innerText = `${Math.max(0, Math.min(100, blocksCount))}%`;
-    const trustEl = document.getElementById('stat-trust');
-    trustEl.innerText = `${trust}%`;
-    trustEl.style.color = trust < 20 ? 'var(--danger)' : 'var(--rkn-gold)';
-    
-    applyVibration();
-    updateBackground();
-    
-    // Сломанная аппаратура при trust <= 10%
-    const brokenEq = document.getElementById('broken-equipment');
-    if (trust <= 10) {
-        brokenEq.style.display = 'block';
-    } else {
-        brokenEq.style.display = 'none';
+        document.getElementById('stat-money').innerText = `${money} МЛН ₽`;
+        document.getElementById('stat-blocks').innerText = `${Math.max(0, Math.min(100, blocksCount))}%`;
+        const trustEl = document.getElementById('stat-trust');
+        trustEl.innerText = `${trust}%`;
+        trustEl.style.color = trust < 20 ? 'var(--danger)' : 'var(--rkn-gold)';
+        
+        applyVibration();
+        updateBackground();
+        
+        const brokenEq = document.getElementById('broken-equipment');
+        if (trust <= 10) {
+            brokenEq.style.display = 'block';
+        } else {
+            brokenEq.style.display = 'none';
+        }
+        
+        const escapeBtn = document.getElementById('escape-btn');
+        if (trust <= 10 && !escapeButtonShown) {
+            escapeBtn.style.display = 'block';
+            escapeButtonShown = true;
+            startDegradation();
+        } else if (trust > 10 && escapeButtonShown) {
+            escapeBtn.style.display = 'none';
+            escapeButtonShown = false;
+            degradationActive = false;
+        }
+        
+        // === ПРОВЕРКА НА ПОБЕДУ ===
+        if (blocksCount >= 100) {
+            checkVictory();
+        }
+        
+        if (trust <= 0) {
+            checkGameOver();
+        }
     }
-    
-    // Кнопка побега
-    const escapeBtn = document.getElementById('escape-btn');
-    if (trust <= 10 && !escapeButtonShown) {
-        escapeBtn.style.display = 'block';
-        escapeButtonShown = true;
-        startDegradation();
-    } else if (trust > 10 && escapeButtonShown) {
-        escapeBtn.style.display = 'none';
-        escapeButtonShown = false;
-        degradationActive = false;
-    }
-    
-    // === ПРОВЕРКА НА ПОБЕДУ ===
-    if (blocksCount >= 100) {
-        checkVictory();
-    }
-    
-    if (trust <= 0) {
-        checkGameOver();
-    }
-}
 
     function checkGameOver() {
         if (degradationActive) degradationActive = false;
@@ -1752,6 +1787,16 @@ function checkVictory() {
         stopHangAudio();
         document.getElementById('main-content').style.display = 'none';
         document.getElementById('escape-screen').style.display = 'block';
+    }
+
+    function checkVictory() {
+        if (citizenInterval) clearInterval(citizenInterval);
+        stopMainAudio();
+        stopHangAudio();
+        document.getElementById('main-content').style.display = 'none';
+        const victoryScreen = document.getElementById('victory-screen');
+        victoryScreen.style.display = 'block';
+        document.getElementById('award-btn').onclick = () => location.reload();
     }
 
     // === АУДИО ===
@@ -1783,19 +1828,14 @@ function checkVictory() {
         stopHangAudio();
         location.reload();
     };
+    document.getElementById('award-btn').onclick = () => {
+        stopMainAudio();
+        stopHangAudio();
+        location.reload();
+    };
 
     // === ЗАПУСК ===
     window.onload = () => {
-        // Улучшаем тач-эффекты
-document.querySelectorAll('.btn').forEach(btn => {
-    btn.addEventListener('touchstart', () => btn.classList.add('active'));
-    btn.addEventListener('touchend', () => btn.classList.remove('active'));
-});
-
-// Предотвращаем масштабирование при двойном клике
-document.addEventListener('dblclick', (e) => {
-    if (e.target.closest('.btn')) e.preventDefault();
-}, { passive: false });
         initSnow();
         drawSnow();
         generateTape();
@@ -1806,46 +1846,5 @@ document.addEventListener('dblclick', (e) => {
     
     window.onresize = initSnow;
 </script>
-<!-- ЭКРАН ПОБЕДЫ -->
-<div id="victory-screen" style="
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
-    color: #ccac41;
-    font-family: 'Segoe UI', monospace;
-    z-index: 10000;
-    text-align: center;
-    padding: 50px;
-    box-sizing: border-box;
-">
-    <div style="font-size: 8rem; margin: 40px 0;">🇷🇺</div>
-    <h2 style="font-size: 2.8rem; margin: 20px 0;">ПОБЕДА!</h2>
-    <p style="font-size: 1.4rem; max-width: 800px; margin: 0 auto 50px; line-height: 1.6;">
-        Рунет полностью очищен!<br>
-        Теперь в нём только одобренный контент и патриотичные мемы.<br>
-        Вы — герой цифровой эпохи!
-    </p>
-    <button id="award-btn" style="
-        background: var(--rkn-gold);
-        color: #000;
-        border: none;
-        padding: 15px 40px;
-        font-size: 1.3rem;
-        border-radius: 8px;
-        cursor: pointer;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        box-shadow: 0 6px 0 #9e8532;
-    ">НАГРАДИТЬ СЕБЯ ОРДЕНОМ</button>
-</div>
-<footer style="text-align: center; margin-top: 30px; font-size: 0.8rem; color: #64748b;">
-    ⚠️ Это сатирический проект. Все совпадения случайны. Автор не несёт ответственности за интерпретацию. PartickCorp 2026, все права не защищенны(закрабсбургерены)
-</footer>
-
 </body>
 </html>
-
-
-
